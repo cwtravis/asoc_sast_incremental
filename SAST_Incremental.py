@@ -1,6 +1,7 @@
 import requests
 import subprocess
 import sys
+import os
 
 config_template = """
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -58,11 +59,11 @@ class ASoCIncremental():
         if r.status_code == 200:
             obj = r.json()
             self.last_commit = obj["GitCommitId"]
-            return True
+            return self.last_commit is not None
         return False
     
     def get_changed_files(self, since_commit):
-        out = subprocess.check_output(f"/usr/bin/git diff --name-only HEAD {since_commit}")
+        out = subprocess.check_output(f"git diff --name-only HEAD {since_commit}")
         out = out.decode().strip().split("\n")
         return out
         
@@ -75,9 +76,14 @@ class ASoCIncremental():
         with open(path, "w") as f:
             f.write(config)
         return path
+    
+    def del_config(self, path="appscan-config.xml"):
+        os.remove(path)
 
 ai = ASoCIncremental(api_key, app_id)
 ai.login()
 ai.get_last_scan_execution()
-ai.get_last_commit()
-ai.write_config()
+if ai.get_last_commit():
+    ai.write_config()
+else:
+    ai.del_config()
