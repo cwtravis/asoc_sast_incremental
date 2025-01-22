@@ -44,7 +44,8 @@ class ASoCIncremental():
         url = f"{self.url_base}/api/v4/Scans"
         params = {
             "$top": "1",
-            "$filter": f"AppId eq {self.app_id} and Technology eq 'StaticAnalyzer'"
+            "$filter": f"AppId eq {self.app_id} and Technology eq 'StaticAnalyzer'",
+            "$orderby": "CreatedAt desc"
         }
         r = self.session.get(url, params=params)
         if r.status_code == 200:
@@ -70,8 +71,10 @@ class ASoCIncremental():
     def write_config(self, path="appscan-config.xml"):
         targets = ""
         files = self.get_changed_files(self.last_commit)
+        print("Changed Files:")
         for file in files:
             targets += f"\t\t<Include>{file}</Include>\n"
+            print(f"\t{file}")
         config = config_template.replace("~TARGETS", targets)
         with open(path, "w") as f:
             f.write(config)
@@ -81,10 +84,20 @@ class ASoCIncremental():
         if os.path.exists(path):
             os.remove(path)
 
+print("==== ASoC SAST Incremental ====")
 ai = ASoCIncremental(api_key, app_id)
-ai.login()
+print("Fetching last scan execution Id")
+if ai.login():
+    print("ASoC API Login: Successful")
+else:
+    print("ASoC API Login: Failed, aborting")
+    sys.exit(1)
 ai.get_last_scan_execution()
+
+print(f"Last Scan Execution Id: {ai.latest_execution_id}")
 if ai.get_last_commit():
+    print(f"Last Scanned Commit: {ai.last_commit}")
     ai.write_config()
 else:
+    print("No last commit found. Scanning everything")
     ai.del_config()
