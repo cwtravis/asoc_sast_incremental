@@ -3,11 +3,10 @@ import subprocess
 import sys
 import os
 
-config_template = """
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+config_template = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Configuration>
     <Targets>
-        <Target path="." >
+        <Target path=".">
 ~TARGETS
         </Target>
     </Targets>
