@@ -65,7 +65,6 @@ class ASoCIncremental():
     
     def get_changed_files(self, since_commit):
         out = subprocess.check_output(f"/usr/bin/git diff --name-only HEAD {since_commit}", shell=True)
-        print(out.decode())
         out = out.decode().strip().split("\n")
         return out
         
