@@ -6,8 +6,7 @@ import os
 config_template = """<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Configuration>
     <Targets>
-        <Target path=".">
-~TARGETS
+        <Target path=".">~TARGETS
         </Target>
     </Targets>
 </Configuration>
@@ -72,7 +71,7 @@ class ASoCIncremental():
         files = self.get_changed_files(self.last_commit)
         print("Changed Files:")
         for file in files:
-            targets += f"\t\t<Include>{file}</Include>\n"
+            targets += f"\n\t\t<Include>{file}</Include>"
             print(f"\t{file}")
         config = config_template.replace("~TARGETS", targets)
         print("Writing Config File:")
@@ -102,3 +101,4 @@ if ai.get_last_commit():
 else:
     print("No last commit found. Scanning everything")
     ai.del_config()
+print("==== ASoC SAST Incremental Complete ====") 
