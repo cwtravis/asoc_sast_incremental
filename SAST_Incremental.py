@@ -76,6 +76,8 @@ class ASoCIncremental():
             targets += f"\t\t<Include>{file}</Include>\n"
             print(f"\t{file}")
         config = config_template.replace("~TARGETS", targets)
+        print("Writing Config File:")
+        print(config)
         with open(path, "w") as f:
             f.write(config)
         return path
