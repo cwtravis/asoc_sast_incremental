@@ -13,13 +13,6 @@ config_template = """
 </Configuration>
 """
 
-#app_id = "ae9c5eba-de48-4efd-a7a2-8f0512938e7d"
-#api_key = {
-#  "KeyId": "d959529f-ee86-6e53-8574-3a1928c8cda8",
-#  "KeySecret": "eC6ErNsfXpdsKnjDPlJpepDq5U9PsEq9sknhcvRWeR8="
-#}
-
-
 api_key = {
   "KeyId": sys.argv[1],
   "KeySecret": sys.argv[2]
@@ -69,7 +62,7 @@ class ASoCIncremental():
         return False
     
     def get_changed_files(self, since_commit):
-        out = subprocess.check_output(f"git diff --name-only HEAD {since_commit}")
+        out = subprocess.check_output(f"/usr/bin/git diff --name-only HEAD {since_commit}")
         out = out.decode().strip().split("\n")
         return out
         
@@ -88,5 +81,3 @@ ai.login()
 ai.get_last_scan_execution()
 ai.get_last_commit()
 ai.write_config()
-
-#write_config("5e3b0d49fa43b6898f96fa3edfef545c06931d87")
