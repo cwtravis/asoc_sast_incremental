@@ -78,7 +78,8 @@ class ASoCIncremental():
         return path
     
     def del_config(self, path="appscan-config.xml"):
-        os.remove(path)
+        if os.path.exists(path):
+            os.remove(path)
 
 ai = ASoCIncremental(api_key, app_id)
 ai.login()
